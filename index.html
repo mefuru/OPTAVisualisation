@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+fill: none;
+stroke: #000;
+shape-rendering: crispEdges;
+}
+.dot {
+stroke: #000;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+d3.json("successfulPassData.json", function(dataset) {
+//Width and height
+var w = 700;
+var h = 455;
+  //Create SVG element
+  var svg = d3.select("body")
+  .append("svg")
+  .attr("width", w)
+  .attr("height", h)
+  //Create scale functions
+  var xScale = d3.scale.linear()
+  .domain([0, d3.max(dataset, function(d) { return d.startXPos; })])
+  .range([0, w]);
+  var yScale = d3.scale.linear()
+  .domain([0, d3.max(dataset, function(d) { return d.startYPos; })])
+  .range([0, h]);
+  svg.selectAll("line")
+  .data(dataset)
+  .enter()
+  .append("line")
+  .attr("x1", function(d) {
+  return xScale(d.startXPos);
+  })
+  .attr("y1", function(d) {
+  return yScale(d.startYPos);
+  })
+  .attr("x2", function(d) {
+  return xScale(d.finalXPos);
+  })
+  .attr("y2", function(d) {
+  return yScale(d.finalXPos);
+  })
+  .attr("stroke", "blue");
+  });
+</script>
