@@ -20,7 +20,7 @@ d3.json("playsData.json", function(dataset) {
         .append("line")
         .transition()
         .delay(function(d, i) {
-            return d.interval * 50;
+            return d.interval * 1;
         })
         .each("start", function() {
             d3.select(this)
@@ -49,6 +49,27 @@ d3.json("playsData.json", function(dataset) {
             return xScale(d.finalXPos);
         })
         .attr("y2", function(d) {
-            return yScale(d.finalXPos);
+            return yScale(d.finalYPos);
+        });
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .transition()
+        .delay(function(d, i) {
+            return d.interval * 1;
+        })
+        .each("start", function(d) {
+            d3.select(this)
+                .text(function(d) {return (d.min +":"+ d.sec)})
+        })
+        .attr("x", 600)
+        .attr("y",50)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .style("font", "300 60px Helvetica Neue")
+        .each("end", function(d) {
+            d3.select(this)
+                .text("")
         });
 });
