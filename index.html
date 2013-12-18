@@ -3,27 +3,27 @@
 <style>
 body {
 font: 10px sans-serif;
-  }
-  .axis path,
-  .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-  }
-  .dot {
-  stroke: #000;
-  }
+}
+.axis path,
+.axis line {
+fill: none;
+stroke: #000;
+shape-rendering: crispEdges;
+}
+.dot {
+stroke: #000;
+}
 </style>
 <body>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script>
-    d3.json("successfulPassData.json", function(dataset) {
-    var w = 700;
-    var h = 455;
-    //Create SVG element
-    var svg = d3.select("body")
-    .append("svg")
-    .attr("width", w)
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+d3.json("passDataWithIntervals.json", function(dataset) {
+var w = 700;
+var h = 455;
+//Create SVG element
+var svg = d3.select("body")
+.append("svg")
+.attr("width", w)
     .attr("height", h)
     .attr("style", "background: green")
     //Create scale functions
@@ -39,9 +39,16 @@ font: 10px sans-serif;
     .append("line")
     .transition()
 .delay(function(d, i) {
-    return i/dataset.length * 1000;
+    return d.interval * 500;
 })
 .duration(1000)
+.each("start", function() {
+    d3.select(this)
+    .attr("stroke", function(d) {
+    if(d.team == "810") return "white";
+    return "black";
+    });
+})
     .attr("x1", function(d) {
     return xScale(d.startXPos);
     })
@@ -53,10 +60,6 @@ font: 10px sans-serif;
     })
     .attr("y2", function(d) {
     return yScale(d.finalXPos);
-    })
-    .attr("stroke", function(d) {
-    if(d.team == "810") return "white";
-    return "black";
     });
     });
   </script>

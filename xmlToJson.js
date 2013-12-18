@@ -5,7 +5,7 @@ var fs = require('fs'),
  __ = require('underscore'),
  xml2js = require('xml2js');
 
-var outputFilename = 'successfulPassData.json';
+var outputFilename = 'passDataWithIntervals.json';
 
 var parser = new xml2js.Parser();
 fs.readFile(__dirname + '/f24.xml', function(err, data) {
@@ -15,6 +15,15 @@ fs.readFile(__dirname + '/f24.xml', function(err, data) {
         var passEvents = __.filter(events, function(event) {
             return (event.$.type_id == 1 && event.$.outcome == 1);
         });
+        var timer = 0;
+        for(var i = 0; i<passEvents.length; i++) {
+            if(i == 0) {
+                passEvents[i].interval = timer;
+            } else {
+                timer+= parseInt(passEvents[i].$.min*60) + parseInt(passEvents[i].$.sec) - parseInt(passEvents[i-1].$.min*60) - parseInt(passEvents[i-1].$.sec);
+                passEvents[i].interval = timer;
+            }
+        }
         // filter map data to required fields
         var pertinentPassData = __.map(passEvents, function(event) {
             var finalXPos, finalYPos;
@@ -33,7 +42,8 @@ fs.readFile(__dirname + '/f24.xml', function(err, data) {
                 "startXPos": event.$.x,
                 "startYPos": event.$.y,
                 "finalXPos": finalXPos, 
-                "finalYPos": finalYPos 
+                "finalYPos": finalYPos,
+                "interval": event.interval
             }
         });
         fs.writeFile(outputFilename, JSON.stringify(pertinentPassData), function(err) {
